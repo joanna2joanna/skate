@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深圳滑板场地图</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+:root {
+  --color-venue: #4A90D9;
+  --color-training: #F5A623;
+  --color-street: #7ED321;
+  --sidebar-width: 380px;
+  --header-height: 56px;
+  --bg: #f5f5f5;
+  --card-bg: #fff;
+  --text: #333;
+  --text-secondary: #888;
+  --border: #e0e0e0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* Header */
+.header {
+  height: var(--header-height);
+  background: #1a1a1a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+  position: relative;
+}
+
+.header h1 {
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.filter-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: #ccc;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  border-color: rgba(255,255,255,0.6);
+  color: #fff;
+}
+
+.filter-btn.active {
+  background: #fff;
+  color: #1a1a1a;
+  border-color: #fff;
+  font-weight: 600;
+}
+
+/* Main layout */
+.main {
+  display: flex;
+  height: calc(100vh - var(--header-height));
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  z-index: 500;
+  overflow: hidden;
+}
+
+/* List view */
+.list-view {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+
+.list-header {
+  padding: 10px 16px 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.spot-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 8px 8px;
+}
+
+.spot-item {
+  background: var(--card-bg);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: all 0.12s;
+  border-left: 3px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spot-item:hover {
+  background: #f0f0f0;
+}
+
+.spot-item.selected {
+  border-left-color: #333;
+  background: #e8e8e8;
+}
+
+.spot-item .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-venue { background: var(--color-venue); }
+.dot-training { background: var(--color-training); }
+.dot-street { background: var(--color-street); }
+
+.spot-item .info {
+  flex: 1;
+  min-width: 0;
+}
+
+.spot-item .name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spot-item .sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+.tag-venue { background: #E8F0FE; color: var(--color-venue); }
+.tag-training { background: #FFF3E0; color: var(--color-training); }
+.tag-street { background: #E8F5E9; color: var(--color-street); }
+
+.spot-item .tag {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* Detail view */
+.detail-view {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.detail-view.show {
+  display: flex;
+}
+
+.detail-header {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.back-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.back-btn:hover {
+  background: #eee;
+}
+
+.detail-header .title {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.detail-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+/* Info table */
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+}
+
+.info-table td {
+  padding: 8px 0;
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-table td:first-child {
+  color: var(--text-secondary);
+  width: 80px;
+  white-space: nowrap;
+}
+
+.info-table td:last-child {
+  color: var(--text);
+}
+
+/* Features */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.feature-tag {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: #f0f0f0;
+  color: #555;
+}
+
+/* Description */
+.desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #555;
+}
+
+/* Map */
+.map-container {
+  flex: 1;
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Custom marker styles — circleMarker SVG animation */
+@keyframes marker-pulse {
+  0%, 100% { opacity: 1; stroke: #FFD700; stroke-width: 6; }
+  25% { opacity: 0.5; stroke: #FFA500; stroke-width: 18; }
+  50% { opacity: 0.35; stroke: #FFA500; stroke-width: 20; }
+  75% { opacity: 0.5; stroke: #FFA500; stroke-width: 18; }
+}
+
+.marker-active {
+  animation: marker-pulse 2s ease-in-out infinite;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 12px;
+  }
+
+  .header h1 {
+    font-size: 15px;
+  }
+
+  .filter-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .main {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: unset;
+    max-height: 45vh;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    order: 2;
+  }
+
+  .map-container {
+    height: 55vh;
+    order: 1;
+  }
+
+  .spot-list {
+    padding: 0 8px 8px;
+  }
+
+  .spot-item {
+    padding: 10px 12px;
+    margin-bottom: 6px;
+  }
+
+  .detail-body {
+    padding: 12px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>深圳滑板场地图</h1>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-type="all">全部</button>
+    <button class="filter-btn" data-type="venue">运营场地</button>
+    <button class="filter-btn" data-type="training">训练场</button>
+    <button class="filter-btn" data-type="street">街头滑板点</button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <!-- List view -->
+    <div class="list-view" id="listView">
+      <div class="list-header" id="listHeader">共 8 个场地</div>
+      <div class="spot-list" id="spotList"></div>
+    </div>
+
+    <!-- Detail view -->
+    <div class="detail-view" id="detailView">
+      <div class="detail-header">
+        <button class="back-btn" id="backBtn">←</button>
+        <span class="title" id="detailTitle"></span>
+      </div>
+      <div class="detail-body" id="detailBody"></div>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div class="map-container">
+    <div id="map"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data/spots.js"></script>
+<script>
+// ── State ──────────────────────────────────
+let activeFilter = 'all';
+let activeSpotId = null;
+const typeLabels = { venue: '运营场地', training: '训练场', street: '街头滑板点' };
+
+// ── Map init ───────────────────────────────
+const map = L.map('map', {
+  center: [22.547, 114.06],
+  zoom: 12,
+  zoomControl: true,
+  attributionControl: true
+});
+
+// Gaode satellite base
+L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', {
+  subdomains: '1234',
+  attribution: '&copy; <a href="https://www.amap.com/">高德地图</a> 卫星影像'
+}).addTo(map);
+
+// Transparent road/label overlay — lowered opacity to reduce clutter
+L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}', {
+  subdomains: '1234',
+  opacity: 0.55,
+  attribution: ''
+}).addTo(map);
+
+// ── Markers ────────────────────────────────
+const typeColors = {
+  venue: '#4A90D9',
+  training: '#F5A623',
+  street: '#7ED321'
+};
+const markerLayer = L.layerGroup().addTo(map);
+let markersMap = {};
+
+function renderMarkers() {
+  markerLayer.clearLayers();
+  const newMarkers = {};
+
+  skateSpots.forEach(spot => {
+    if (activeFilter !== 'all' && spot.type !== activeFilter) return;
+
+    const marker = L.circleMarker([spot.lat, spot.lng], {
+      radius: 12,
+      fillColor: typeColors[spot.type],
+      color: '#fff',
+      weight: 4,
+      fillOpacity: 1,
+      opacity: 1,
+    }).addTo(markerLayer);
+    marker.on('click', () => showDetail(spot.id));
+    newMarkers[spot.id] = marker;
+  });
+
+  markersMap = newMarkers;
+}
+
+function highlightMarker(id) {
+  // Reset all markers
+  Object.values(markersMap).forEach(m => {
+    m.setStyle({ color: '#fff', weight: 4 });
+    if (m._path) m._path.classList.remove('marker-active');
+  });
+
+  if (!id || !markersMap[id]) return;
+
+  const marker = markersMap[id];
+  marker.setStyle({ color: '#FFD700', weight: 6 });
+  if (marker._path) marker._path.classList.add('marker-active');
+}
+
+// ── List ───────────────────────────────────
+function renderList() {
+  const container = document.getElementById('spotList');
+  const header = document.getElementById('listHeader');
+  const filtered = skateSpots.filter(s => activeFilter === 'all' || s.type === activeFilter);
+
+  header.textContent = `共 ${filtered.length} 个场地`;
+
+  container.innerHTML = filtered.map(spot => `
+    <div class="spot-item${spot.id === activeSpotId ? ' selected' : ''}"
+         data-id="${spot.id}"
+         onclick="showDetail(${spot.id})">
+      <div class="dot dot-${spot.type}"></div>
+      <div class="info">
+        <div class="name">${spot.name}</div>
+        <div class="sub">${spot.price}</div>
+      </div>
+      <span class="tag tag-${spot.type}">${typeLabels[spot.type]}</span>
+    </div>
+  `).join('');
+}
+
+// ── Detail ─────────────────────────────────
+function showDetail(id) {
+  const spot = skateSpots.find(s => s.id === id);
+  if (!spot) return;
+
+  activeSpotId = id;
+
+  document.getElementById('detailTitle').textContent = spot.name;
+  document.getElementById('detailBody').innerHTML = buildDetailHTML(spot);
+  document.getElementById('listView').style.display = 'none';
+  document.getElementById('detailView').classList.add('show');
+
+  // Fly to marker
+  if (markersMap[id]) {
+    map.flyTo([spot.lat, spot.lng], 15, { duration: 0.6 });
+    highlightMarker(id);
+  }
+
+  renderList();
+}
+
+function buildDetailHTML(spot) {
+  return `
+    <table class="info-table">
+      <tr><td>类型</td><td><span class="tag tag-${spot.type}">${typeLabels[spot.type]}</span></td></tr>
+      <tr><td>规模</td><td>${spot.scale}</td></tr>
+      <tr><td>运营方</td><td>${spot.operator}</td></tr>
+      <tr><td>价格</td><td>${spot.price}</td></tr>
+    </table>
+
+    ${spot.features.length ? `
+      <div class="features">
+        ${spot.features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
+      </div>
+    ` : ''}
+
+    <div class="desc">${spot.description}</div>
+  `;
+}
+
+function backToList() {
+  activeSpotId = null;
+  highlightMarker(null);
+  document.getElementById('detailView').classList.remove('show');
+  document.getElementById('listView').style.display = '';
+  renderList();
+}
+
+document.getElementById('backBtn').addEventListener('click', backToList);
+
+// ── Filter ─────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.type;
+    activeSpotId = null;
+    highlightMarker(null);
+    document.getElementById('detailView').classList.remove('show');
+    document.getElementById('listView').style.display = '';
+    renderMarkers();
+    renderList();
+  });
+});
+
+// ── Init ───────────────────────────────────
+renderMarkers();
+renderList();
+</script>
+</body>
+</html>
