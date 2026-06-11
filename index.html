@@ -920,10 +920,39 @@ document.querySelectorAll('#typeBar .filter-btn').forEach(btn => {
 
 // ── Counter ────────────────────────────────
 (function() {
-  var count = parseInt(localStorage.getItem('skate_hits') || '0', 10) + 1;
-  localStorage.setItem('skate_hits', count);
-  document.getElementById('visitCount').textContent = count;
-  document.getElementById('visitorCount').textContent = count > 1 ? count : 1;
+  var API = 'https://api.counterapi.dev/v1/skate-map-prd/';
+  // total visits — increment on every page load
+  fetch(API + 'visits/up')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      document.getElementById('visitCount').textContent = d.count;
+    })
+    .catch(function() {
+      document.getElementById('visitCount').textContent = '…';
+    });
+  // unique visitors — only increment if no cookie set
+  var visited = document.cookie.indexOf('skate_v=1') !== -1;
+  if (!visited) {
+    document.cookie = 'skate_v=1; max-age=31536000; path=/; SameSite=Lax';
+    fetch(API + 'visitors/up')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        document.getElementById('visitorCount').textContent = d.count;
+      })
+      .catch(function() {
+        document.getElementById('visitorCount').textContent = '…';
+      });
+  } else {
+    // already counted as visitor — just get current count
+    fetch(API + 'visitors')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        document.getElementById('visitorCount').textContent = d.count;
+      })
+      .catch(function() {
+        document.getElementById('visitorCount').textContent = '…';
+      });
+  }
 })();
 
 // ── Init ───────────────────────────────────
