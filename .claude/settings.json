@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s \"https://restapi.amap.com/v3/geocode/geo?key=*)",
+      "Bash(curl -s \"https://restapi.amap.com/v3/place/text?key=*)",
+      "Bash(for f in data/*.js; do node --check \"$f\"; done)",
+      "Bash(git add -A && git commit -m *)",
+      "Bash(git push git@github.com:joanna2joanna/skate.git main)"
+    ]
+  }
+}
