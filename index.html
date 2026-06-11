@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>深圳滑板场地图</title>
+<title>广东滑板场地图</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
 :root {
@@ -11,7 +11,7 @@
   --color-training: #F5A623;
   --color-street: #7ED321;
   --sidebar-width: 380px;
-  --header-height: 56px;
+  --header-height: 96px;
   --bg: #f5f5f5;
   --card-bg: #fff;
   --text: #333;
@@ -34,29 +34,30 @@ body {
   background: #1a1a1a;
   color: #fff;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
   padding: 0 20px;
   z-index: 1000;
   position: relative;
 }
 
 .header h1 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   white-space: nowrap;
 }
 
-.filter-bar {
+.header-row {
   display: flex;
+  align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  justify-content: flex-end;
 }
 
 .filter-btn {
   padding: 6px 14px;
-  border-radius: 20px;
+  border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.3);
   background: transparent;
   color: #ccc;
@@ -76,6 +77,12 @@ body {
   color: #1a1a1a;
   border-color: #fff;
   font-weight: 600;
+}
+
+.city-btn.active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border-color: rgba(255,255,255,0.6);
 }
 
 /* Main layout */
@@ -180,6 +187,19 @@ body {
   border-radius: 8px;
   font-weight: 500;
   flex-shrink: 0;
+}
+
+.section-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 8px 4px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.section-header:first-child {
+  padding-top: 2px;
 }
 
 /* Detail view */
@@ -312,7 +332,7 @@ body {
   }
 
   .filter-btn {
-    padding: 4px 10px;
+    padding: 5px 10px;
     font-size: 12px;
   }
 
@@ -352,8 +372,9 @@ body {
 <body>
 
 <div class="header">
-  <h1>深圳滑板场地图</h1>
-  <div class="filter-bar">
+  <h1>广东滑板场地图</h1>
+  <div class="header-row" id="cityBar"></div>
+  <div class="header-row" id="typeBar">
     <button class="filter-btn active" data-type="all">全部</button>
     <button class="filter-btn" data-type="venue">运营场地</button>
     <button class="filter-btn" data-type="training">训练场</button>
@@ -387,17 +408,71 @@ body {
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data/shenzhen.js"></script>
+<script src="data/guangzhou.js"></script>
+<script src="data/dongguan.js"></script>
+<script src="data/foshan.js"></script>
+<script src="data/zhuhai.js"></script>
+<script src="data/huizhou.js"></script>
+<script src="data/zhongshan.js"></script>
+<script src="data/zhaoqing.js"></script>
 <script src="data/spots.js"></script>
 <script>
 // ── State ──────────────────────────────────
+let activeCity = 'all';
 let activeFilter = 'all';
 let activeSpotId = null;
 const typeLabels = { venue: '运营场地', training: '训练场', street: '街头滑板点' };
 
+// ── City config ─────────────────────────────
+const cityCenters = {
+  '深圳': [22.547, 114.06, 12],
+  '广州': [23.129, 113.264, 11],
+  '东莞': [23.021, 113.752, 11],
+  '佛山': [23.022, 113.122, 11],
+  '珠海': [22.271, 113.577, 11],
+  '惠州': [23.112, 114.416, 11],
+  '中山': [22.516, 113.393, 11],
+  '肇庆': [23.047, 112.465, 11],
+};
+
+function getAvailableCities() {
+  const cities = new Set();
+  skateSpots.forEach(s => cities.add(s.city));
+  return Array.from(cities).sort();
+}
+
+function renderCityBar() {
+  const bar = document.getElementById('cityBar');
+  const cities = getAvailableCities();
+  if (cities.length <= 1) { bar.innerHTML = ''; return; }
+
+  bar.innerHTML = [
+    `<button class="filter-btn city-btn${activeCity === 'all' ? ' active' : ''}" data-city="all">全部</button>`,
+    ...cities.map(c => `<button class="filter-btn city-btn${activeCity === c ? ' active' : ''}" data-city="${c}">${c}</button>`)
+  ].join('');
+
+  bar.querySelectorAll('.city-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCity = btn.dataset.city;
+      activeSpotId = null;
+      highlightMarker(null);
+      document.getElementById('detailView').classList.remove('show');
+      document.getElementById('listView').style.display = '';
+      const center = activeCity === 'all'
+        ? [22.8, 113.5, 10] : cityCenters[activeCity];
+      map.flyTo(center.slice(0, 2), center[2], { duration: 0.6 });
+      renderCityBar();
+      renderMarkers();
+      renderList();
+    });
+  });
+}
+
 // ── Map init ───────────────────────────────
 const map = L.map('map', {
-  center: [22.547, 114.06],
-  zoom: 12,
+  center: [22.8, 113.5],
+  zoom: 10,
   zoomControl: true,
   attributionControl: true
 });
@@ -429,6 +504,7 @@ function renderMarkers() {
   const newMarkers = {};
 
   skateSpots.forEach(spot => {
+    if (activeCity !== 'all' && spot.city !== activeCity) return;
     if (activeFilter !== 'all' && spot.type !== activeFilter) return;
 
     const marker = L.circleMarker([spot.lat, spot.lng], {
@@ -464,22 +540,37 @@ function highlightMarker(id) {
 function renderList() {
   const container = document.getElementById('spotList');
   const header = document.getElementById('listHeader');
-  const filtered = skateSpots.filter(s => activeFilter === 'all' || s.type === activeFilter);
+  const filtered = skateSpots.filter(s =>
+    (activeCity === 'all' || s.city === activeCity) &&
+    (activeFilter === 'all' || s.type === activeFilter)
+  );
 
   header.textContent = `共 ${filtered.length} 个场地`;
 
-  container.innerHTML = filtered.map(spot => `
-    <div class="spot-item${spot.id === activeSpotId ? ' selected' : ''}"
-         data-id="${spot.id}"
-         onclick="showDetail(${spot.id})">
-      <div class="dot dot-${spot.type}"></div>
-      <div class="info">
-        <div class="name">${spot.name}</div>
-        <div class="sub">${spot.price}</div>
+  // Group by type: venue, training, street
+  const typeOrder = ['venue', 'training', 'street'];
+  const groups = {};
+  typeOrder.forEach(t => { groups[t] = filtered.filter(s => s.type === t); });
+
+  const sectionLabels = { venue: '运营场地', training: '训练场', street: '街头滑板点' };
+
+  container.innerHTML = typeOrder.map(type => {
+    const spots = groups[type];
+    if (!spots.length) return '';
+    const items = spots.map(spot => `
+      <div class="spot-item${spot.id === activeSpotId ? ' selected' : ''}"
+           data-id="${spot.id}"
+           onclick="showDetail(${spot.id})">
+        <div class="dot dot-${spot.type}"></div>
+        <div class="info">
+          <div class="name">${spot.name}</div>
+          <div class="sub">${spot.city} · ${spot.price}</div>
+        </div>
+        <span class="tag tag-${spot.type}">${typeLabels[spot.type]}</span>
       </div>
-      <span class="tag tag-${spot.type}">${typeLabels[spot.type]}</span>
-    </div>
-  `).join('');
+    `).join('');
+    return `<div class="section-header">${sectionLabels[type]} · ${spots.length}</div>${items}`;
+  }).join('');
 }
 
 // ── Detail ─────────────────────────────────
@@ -506,6 +597,7 @@ function showDetail(id) {
 function buildDetailHTML(spot) {
   return `
     <table class="info-table">
+      <tr><td>城市</td><td>${spot.city}</td></tr>
       <tr><td>类型</td><td><span class="tag tag-${spot.type}">${typeLabels[spot.type]}</span></td></tr>
       <tr><td>规模</td><td>${spot.scale}</td></tr>
       <tr><td>运营方</td><td>${spot.operator}</td></tr>
@@ -533,9 +625,9 @@ function backToList() {
 document.getElementById('backBtn').addEventListener('click', backToList);
 
 // ── Filter ─────────────────────────────────
-document.querySelectorAll('.filter-btn').forEach(btn => {
+document.querySelectorAll('#typeBar .filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#typeBar .filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     activeFilter = btn.dataset.type;
     activeSpotId = null;
@@ -548,6 +640,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 // ── Init ───────────────────────────────────
+renderCityBar();
 renderMarkers();
 renderList();
 </script>
