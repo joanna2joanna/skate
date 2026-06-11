@@ -917,7 +917,7 @@ document.querySelectorAll('#typeBar .filter-btn').forEach(btn => {
       });
   } else {
     // already counted as visitor — just get current count
-    fetch(API + 'visitors')
+    fetch(API + 'visitors/')
       .then(function(r) { return r.json(); })
       .then(function(d) {
         document.getElementById('visitorCount').textContent = d.count;
