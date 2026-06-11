@@ -35,7 +35,7 @@ body {
   background: var(--bg);
 }
 
-/* ── Header: brutalist skatepark wall ─── */
+/* ── Header: painted skatepark wall ─── */
 .header {
   height: var(--header-height);
   color: #fff;
@@ -48,38 +48,64 @@ body {
   z-index: 1000;
   position: relative;
   isolation: isolate;
-  /* asphalt base + noise grain */
+  overflow: hidden;
+  /* warm concrete with painted geometric fields */
   background:
-    linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 100%),
+    /* painted orange diagonal block */
+    linear-gradient(162deg,
+      transparent 0%, transparent 52%,
+      rgba(255,90,31,0.85) 52%, rgba(255,90,31,1) 56%,
+      rgba(255,80,20,0.9) 56%, rgba(255,70,10,0.6) 62%,
+      transparent 62%
+    ),
+    /* yellow accent slash */
+    linear-gradient(155deg,
+      transparent 0%, transparent 64%,
+      rgba(255,215,0,0.7) 64%, rgba(255,200,0,0.5) 66.5%,
+      transparent 67%
+    ),
+    /* cyan spray mark — upper right */
+    radial-gradient(ellipse 200px 90px at 88% 25%, rgba(0,180,210,0.55) 0%, transparent 100%),
+    /* orange glow — lower left */
+    radial-gradient(ellipse 180px 70px at 12% 80%, rgba(255,90,31,0.4) 0%, transparent 100%),
+    /* dark gradient for depth */
+    linear-gradient(180deg,
+      rgba(30,25,20,0.3) 0%,
+      rgba(40,35,28,0.15) 40%,
+      rgba(20,18,15,0.35) 100%
+    ),
     url("images/asfalt-dark.png"),
-    #121212;
+    #2A2520;
 }
 
-/* caution-tape accent stripe */
+/* concrete panel seam — vertical */
 .header::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 5px;
-  background: repeating-linear-gradient(
-    90deg,
-    #FFD700 0px, #FFD700 24px,
-    #121212 24px, #121212 28px,
-    #FF6B35 28px, #FF6B35 52px,
-    #121212 52px, #121212 56px
-  );
-  z-index: 3;
+  top: 0; left: 62%;
+  width: 2px; height: 100%;
+  background: rgba(0,0,0,0.3);
+  box-shadow:
+    64px 0 0 rgba(0,0,0,0.15),
+    -64px 0 0 rgba(0,0,0,0.1);
+  z-index: 0;
+  pointer-events: none;
 }
 
-/* bottom fade */
+/* horizontal seam + bottom weight */
 .header::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 40px;
-  background: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, transparent 100%);
-  z-index: 0;
-  pointer-events: none;
+  height: 6px;
+  background:
+    repeating-linear-gradient(90deg,
+      #FFD700 0px, #FFD700 18px,
+      #FF5A1F 18px, #FF5A1F 36px,
+      #1a1a1a 36px, #1a1a1a 40px
+    );
+  z-index: 2;
+  box-shadow: 0 -1px 0 rgba(0,0,0,0.2);
 }
 
 .header h1 {
@@ -90,12 +116,15 @@ body {
   letter-spacing: 6px;
   position: relative;
   z-index: 1;
-  /* spray-paint halo */
   text-shadow:
-    0 0 40px rgba(255,255,255,0.15),
-    0 2px 4px rgba(0,0,0,0.6);
-  /* slight rotation for street authenticity */
+    0 0 60px rgba(255,255,255,0.2),
+    0 2px 6px rgba(0,0,0,0.7),
+    2px 2px 0 rgba(255,90,31,0.3);
   transform: rotate(-0.5deg);
+  /* title plate background */
+  padding: 4px 20px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .header-row {
