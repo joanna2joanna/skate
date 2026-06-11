@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>广东滑板场地图</title>
+<title>珠三角滑板场地图</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
 :root {
@@ -11,7 +11,7 @@
   --color-training: #F5A623;
   --color-street: #7ED321;
   --sidebar-width: 380px;
-  --header-height: 112px;
+  --header-height: 160px;
   --bg: #f5f5f5;
   --card-bg: #fff;
   --text: #333;
@@ -36,22 +36,24 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 7px;
-  padding: 10px 20px 8px;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
   z-index: 1000;
   position: relative;
 }
 
 .header h1 {
-  font-size: 20px;
+  font-size: 40px;
   font-weight: 700;
   white-space: nowrap;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
 }
 
 .header-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   flex-wrap: wrap;
   line-height: 1;
@@ -375,7 +377,7 @@ body {
 <body>
 
 <div class="header">
-  <h1>广东滑板场地图</h1>
+  <h1>珠三角滑板场地图</h1>
   <div class="header-row" id="cityBar"></div>
   <div class="header-row" id="typeBar">
     <button class="filter-btn active" data-type="all">全部</button>
