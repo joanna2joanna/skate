@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>珠三角滑板场地图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
 :root {
@@ -28,7 +31,7 @@ body {
   background: var(--bg);
 }
 
-/* Header — brush-stroke painted wall effect */
+/* ── Header: brutalist skatepark wall ─── */
 .header {
   height: var(--header-height);
   color: #fff;
@@ -36,86 +39,108 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  padding: 16px 24px;
+  gap: 12px;
+  padding: 20px 24px;
   z-index: 1000;
   position: relative;
-  overflow: hidden;
-  background: #1a1a1a
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E\
-      %3Cdefs%3E\
-        %3Cfilter id='rough'%3E\
-          %3CfeTurbulence type='fractalNoise' baseFrequency='0.04 0.3' numOctaves='3'/%3E\
-          %3CfeDisplacementMap in='SourceGraphic' scale='6'/%3E\
-        %3C/filter%3E\
-        %3Cfilter id='noise'%3E\
-          %3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E\
-          %3CfeColorMatrix type='saturate' values='0'/%3E\
-        %3C/filter%3E\
-      %3C/defs%3E\
-      %3C!-- wall texture --%3E\
-      %3Crect width='1200' height='160' filter='url(%23noise)' opacity='0.08'/%3E\
-      %3C!-- wide horizontal roller strokes --%3E\
-      %3Cpath d='M-20,20 Q200,16 500,22 T1200,18' stroke='%23222222' stroke-width='55' fill='none' opacity='0.7' filter='url(%23rough)'/%3E\
-      %3Cpath d='M-20,60 Q300,65 600,58 T1200,62' stroke='%23181818' stroke-width='50' fill='none' opacity='0.5' filter='url(%23rough)'/%3E\
-      %3Cpath d='M-20,95 Q400,92 800,98 T1200,94' stroke='%23202020' stroke-width='45' fill='none' opacity='0.6' filter='url(%23rough)'/%3E\
-      %3Cpath d='M-20,130 Q350,134 700,128 T1200,132' stroke='%231c1c1c' stroke-width='40' fill='none' opacity='0.5' filter='url(%23rough)'/%3E\
-      %3C!-- bold accent brush strokes --%3E\
-      %3Cpath d='M-30,35 Q380,28 600,38' stroke='%23FF6B35' stroke-width='28' fill='none' opacity='0.18' filter='url(%23rough)'/%3E\
-      %3Cpath d='M500,75 Q700,68 1000,80' stroke='%2300D9FF' stroke-width='22' fill='none' opacity='0.15' filter='url(%23rough)'/%3E\
-      %3Cpath d='M200,115 Q500,108 800,120' stroke='%23FFD700' stroke-width='18' fill='none' opacity='0.14' filter='url(%23rough)'/%3E\
-      %3C!-- diagonal slash strokes --%3E\
-      %3Cpath d='M850,-20 L1050,180' stroke='%23DD2E44' stroke-width='32' fill='none' opacity='0.12' filter='url(%23rough)'/%3E\
-      %3Cpath d='M80,-20 L280,180' stroke='%237ED321' stroke-width='24' fill='none' opacity='0.1' filter='url(%23rough)'/%3E\
-    %3C/svg%3E");
+  isolation: isolate;
+  /* asphalt base + noise grain */
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 100%),
+    url("images/asfalt-dark.png"),
+    #121212;
 }
 
+/* caution-tape accent stripe */
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: repeating-linear-gradient(
+    90deg,
+    #FFD700 0px, #FFD700 24px,
+    #121212 24px, #121212 28px,
+    #FF6B35 28px, #FF6B35 52px,
+    #121212 52px, #121212 56px
+  );
+  z-index: 3;
+}
+
+/* bottom fade */
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+  z-index: 0;
+  pointer-events: none;
+}
 
 .header h1 {
-  font-size: 40px;
-  font-weight: 700;
+  font-family: 'ZCOOL QingKe HuangYou', cursive;
+  font-size: 48px;
+  font-weight: 400;
   white-space: nowrap;
-  letter-spacing: 4px;
+  letter-spacing: 6px;
+  position: relative;
+  z-index: 1;
+  /* spray-paint halo */
+  text-shadow:
+    0 0 40px rgba(255,255,255,0.15),
+    0 2px 4px rgba(0,0,0,0.6);
+  /* slight rotation for street authenticity */
+  transform: rotate(-0.5deg);
 }
 
 .header-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
   line-height: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .filter-btn {
-  padding: 5px 11px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.3);
-  background: transparent;
-  color: #ccc;
+  padding: 6px 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.4);
+  color: #bbb;
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
   line-height: 1.4;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  backdrop-filter: blur(2px);
 }
 
 .filter-btn:hover {
-  border-color: rgba(255,255,255,0.6);
+  border-color: rgba(255,255,255,0.5);
   color: #fff;
+  background: rgba(255,255,255,0.08);
 }
 
 .filter-btn.active {
-  background: #fff;
-  color: #1a1a1a;
-  border-color: #fff;
+  background: #FF6B35;
+  color: #fff;
+  border-color: #FF6B35;
   font-weight: 600;
+  box-shadow: 0 0 20px rgba(255,107,53,0.3);
 }
 
 .city-btn.active {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.15);
   color: #fff;
-  border-color: rgba(255,255,255,0.6);
+  border-color: rgba(255,255,255,0.5);
+  box-shadow: none;
 }
 
 /* Main layout */
@@ -357,16 +382,18 @@ body {
 /* Mobile */
 @media (max-width: 768px) {
   .header {
-    padding: 0 12px;
+    padding: 8px 12px;
+    gap: 8px;
   }
 
   .header h1 {
-    font-size: 17px;
+    font-size: 28px;
+    letter-spacing: 3px;
   }
 
   .filter-btn {
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .main {
