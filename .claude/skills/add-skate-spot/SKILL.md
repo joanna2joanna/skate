@@ -1,6 +1,6 @@
 ---
-name: add-city
-description: 为"大湾区滑板场地图"添加新城市滑板场地数据。完整流程：搜索 → geocode → 写数据文件 → 接入页面 → 验证 → 提交推送。
+name: add-skate-spot
+description: 搜索、geocode 并添加新城市滑板场地数据到地图。完整流程：搜索 → geocode → 写数据文件 → 接入页面 → 验证 → 提交推送。
 ---
 
 ## 流程
