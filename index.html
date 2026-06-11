@@ -35,7 +35,7 @@ body {
   background: var(--bg);
 }
 
-/* ── Header: skate photo + dark overlay ─── */
+/* ── Header: skatepark bowl geometry texture ─── */
 .header {
   height: var(--header-height);
   color: #fff;
@@ -50,21 +50,47 @@ body {
   isolation: isolate;
   overflow: hidden;
   background:
-    /* heavy dark gradient over the photo — ensures text readability */
+    /* dark gradient for readability */
     linear-gradient(180deg,
-      rgba(10,8,6,0.75) 0%,
-      rgba(15,12,8,0.55) 40%,
-      rgba(10,8,6,0.7) 100%
+      rgba(8,6,4,0.72) 0%,
+      rgba(15,12,8,0.50) 45%,
+      rgba(8,6,4,0.72) 100%
     ),
-    /* orange accent wash — left side */
-    linear-gradient(105deg,
-      rgba(255,90,31,0.2) 0%,
-      transparent 40%
-    ),
-    /* photo — fills header */
-    url("images/header-bg.jpg") center/cover no-repeat,
-    /* fallback dark base */
-    #1a1410;
+    /* orange accent — lower-left warm glow */
+    radial-gradient(ellipse 300px 120px at 20% 85%, rgba(255,90,31,0.18) 0%, transparent 100%),
+    /* cyan accent — upper-right cool hint */
+    radial-gradient(ellipse 200px 80px at 85% 20%, rgba(0,180,210,0.12) 0%, transparent 100%),
+    /* skatepark bowl geometry — SVG pattern */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 160'%3E\
+      %3C!-- bowl curves --%3E\
+      %3Cpath d='M-20,140 Q80,20 200,140' stroke='%23ffffff' stroke-width='1.5' fill='none' opacity='0.12'/%3E\
+      %3Cpath d='M80,140 Q200,30 320,140' stroke='%23ffffff' stroke-width='1.2' fill='none' opacity='0.10'/%3E\
+      %3Cpath d='M200,140 Q320,40 440,140' stroke='%23ffffff' stroke-width='1.5' fill='none' opacity='0.12'/%3E\
+      %3Cpath d='M320,140 Q440,30 560,140' stroke='%23ffffff' stroke-width='1.2' fill='none' opacity='0.10'/%3E\
+      %3Cpath d='M440,140 Q560,40 660,140' stroke='%23ffffff' stroke-width='1.5' fill='none' opacity='0.12'/%3E\
+      %3C!-- coping lines (bowl edges) --%3E\
+      %3Cpath d='M-20,90 Q80,-10 200,90' stroke='%23ffffff' stroke-width='0.8' fill='none' opacity='0.08'/%3E\
+      %3Cpath d='M80,90 Q200,0 320,90' stroke='%23ffffff' stroke-width='0.8' fill='none' opacity='0.08'/%3E\
+      %3Cpath d='M200,90 Q320,-10 440,90' stroke='%23ffffff' stroke-width='0.8' fill='none' opacity='0.08'/%3E\
+      %3Cpath d='M320,90 Q440,0 560,90' stroke='%23ffffff' stroke-width='0.8' fill='none' opacity='0.08'/%3E\
+      %3Cpath d='M440,90 Q560,-10 660,90' stroke='%23ffffff' stroke-width='0.8' fill='none' opacity='0.08'/%3E\
+      %3C!-- flat bottom / transitions --%3E\
+      %3Cpath d='M-20,155 Q80,70 200,155' stroke='%23FF5A1F' stroke-width='1' fill='none' opacity='0.15'/%3E\
+      %3Cpath d='M120,155 Q240,60 360,155' stroke='%23FF5A1F' stroke-width='1' fill='none' opacity='0.15'/%3E\
+      %3Cpath d='M260,155 Q380,70 500,155' stroke='%23FF5A1F' stroke-width='1' fill='none' opacity='0.15'/%3E\
+      %3Cpath d='M400,155 Q520,60 640,155' stroke='%23FF5A1F' stroke-width='1' fill='none' opacity='0.15'/%3E\
+      %3C!-- deck bolts / hardware dots --%3E\
+      %3Ccircle cx='50' cy='25' r='1.2' fill='%23FFD700' opacity='0.2'/%3E\
+      %3Ccircle cx='150' cy='40' r='1.2' fill='%23FFD700' opacity='0.2'/%3E\
+      %3Ccircle cx='280' cy='30' r='1.2' fill='%23FFD700' opacity='0.2'/%3E\
+      %3Ccircle cx='400' cy='45' r='1.2' fill='%23FFD700' opacity='0.2'/%3E\
+      %3Ccircle cx='520' cy='28' r='1.2' fill='%23FFD700' opacity='0.2'/%3E\
+      %3Ccircle cx='100' cy='130' r='1.2' fill='%23ffffff' opacity='0.15'/%3E\
+      %3Ccircle cx='250' cy='135' r='1.2' fill='%23ffffff' opacity='0.15'/%3E\
+      %3Ccircle cx='380' cy='132' r='1.2' fill='%23ffffff' opacity='0.15'/%3E\
+      %3Ccircle cx='510' cy='138' r='1.2' fill='%23ffffff' opacity='0.15'/%3E\
+    %3C/svg%3E"),
+    #0f0c09;
 }
 
 /* bottom accent stripe */
@@ -85,7 +111,7 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.06);
   z-index: 2;
   pointer-events: none;
 }
