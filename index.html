@@ -11,7 +11,7 @@
   --color-training: #F5A623;
   --color-street: #7ED321;
   --sidebar-width: 380px;
-  --header-height: 96px;
+  --header-height: 112px;
   --bg: #f5f5f5;
   --card-bg: #fff;
   --text: #333;
@@ -36,14 +36,14 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
-  padding: 0 20px;
+  gap: 7px;
+  padding: 8px 20px;
   z-index: 1000;
   position: relative;
 }
 
 .header h1 {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -51,12 +51,13 @@ body {
 .header-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
+  line-height: 1;
 }
 
 .filter-btn {
-  padding: 6px 14px;
+  padding: 5px 11px;
   border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.3);
   background: transparent;
@@ -65,6 +66,7 @@ body {
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  line-height: 1.4;
 }
 
 .filter-btn:hover {
