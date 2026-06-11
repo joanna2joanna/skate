@@ -15,6 +15,7 @@
   --color-street: #5DB83D;
   --sidebar-width: 400px;
   --header-height: 160px;
+  --footer-height: 36px;
   --accent: #FF5A1F;
   --accent-yellow: #FFD700;
   --bg: #E8E4DD;
@@ -181,7 +182,7 @@ body {
 /* Main layout */
 .main {
   display: flex;
-  height: calc(100vh - var(--header-height));
+  height: calc(100vh - var(--header-height) - var(--footer-height));
 }
 
 /* Sidebar — industrial concrete */
@@ -543,6 +544,47 @@ body {
   animation: marker-pulse 2s ease-in-out infinite;
 }
 
+/* Footer */
+.footer {
+  height: var(--footer-height);
+  background: #1a1a1a;
+  color: #777;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 12px;
+  z-index: 1000;
+  position: relative;
+  border-top: 2px solid #2a2a2a;
+  letter-spacing: 0.3px;
+}
+
+.footer a {
+  color: #aaa;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer a:hover {
+  color: var(--accent);
+}
+
+.footer .counter {
+  display: flex;
+  gap: 16px;
+}
+
+.footer .counter span {
+  color: #999;
+}
+
+.footer .counter em {
+  font-style: normal;
+  color: var(--accent);
+  font-weight: 600;
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   :root {
@@ -600,6 +642,8 @@ body {
   .detail-body { padding: 14px; }
 
   .list-header { padding: 10px 14px 8px; }
+
+  .footer { font-size: 11px; padding: 0 12px; }
 }
 </style>
 </head>
@@ -874,10 +918,25 @@ document.querySelectorAll('#typeBar .filter-btn').forEach(btn => {
   });
 });
 
+// ── Counter ────────────────────────────────
+(function() {
+  var count = parseInt(localStorage.getItem('skate_hits') || '0', 10) + 1;
+  localStorage.setItem('skate_hits', count);
+  document.getElementById('visitCount').textContent = count;
+  document.getElementById('visitorCount').textContent = count > 1 ? count : 1;
+})();
+
 // ── Init ───────────────────────────────────
 renderCityBar();
 renderMarkers();
 renderList();
 </script>
+<footer class="footer">
+  <div class="counter">
+    <span>访问人数 <em id="visitorCount">-</em></span>
+    <span>访问次数 <em id="visitCount">-</em></span>
+  </div>
+  <a href="mailto:304380013@qq.com">304380013@qq.com</a>
+</footer>
 </body>
 </html>
