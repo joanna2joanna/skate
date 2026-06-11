@@ -28,10 +28,9 @@ body {
   background: var(--bg);
 }
 
-/* Header */
+/* Header — graffiti / skate deck inspired */
 .header {
   height: var(--header-height);
-  background: #1a1a1a;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -41,6 +40,47 @@ body {
   padding: 16px 24px;
   z-index: 1000;
   position: relative;
+  overflow: hidden;
+  /* concrete texture base */
+  background:
+    /* paint splatters — colorful organic blobs */
+    radial-gradient(ellipse 120px 40px at 8% 85%, rgba(255,107,53,0.5) 0%, transparent 100%),
+    radial-gradient(ellipse 80px 50px at 92% 15%, rgba(0,217,255,0.45) 0%, transparent 100%),
+    radial-gradient(ellipse 60px 35px at 35% 10%, rgba(255,215,0,0.4) 0%, transparent 100%),
+    radial-gradient(ellipse 100px 30px at 70% 90%, rgba(221,46,68,0.45) 0%, transparent 100%),
+    radial-gradient(ellipse 50px 25px at 55% 50%, rgba(130,255,60,0.35) 0%, transparent 100%),
+    /* diagonal slash — skate deck graphic vibe */
+    linear-gradient(155deg, transparent 42%, rgba(255,255,255,0.06) 42%, rgba(255,255,255,0.06) 44%, transparent 44%),
+    linear-gradient(165deg, transparent 48%, rgba(255,255,255,0.04) 48%, rgba(255,255,255,0.04) 50%, transparent 50%),
+    /* concrete grain */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+    #1a1a1a;
+}
+
+/* tag-style accent line across the header */
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    #FF6B35, #FFD700 20%, #00D9FF 40%, #7ED321 60%,
+    #DD2E44 80%, #FF6B35
+  );
+  z-index: 2;
+}
+
+/* spray-paint drip effect bottom-right */
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  right: 18%;
+  width: 60px;
+  height: 20px;
+  background: radial-gradient(ellipse at top, rgba(255,215,0,0.5) 0%, transparent 70%);
+  border-radius: 0 0 8px 8px;
+  z-index: 0;
 }
 
 .header h1 {
@@ -381,9 +421,9 @@ body {
   <div class="header-row" id="cityBar"></div>
   <div class="header-row" id="typeBar">
     <button class="filter-btn active" data-type="all">全部</button>
-    <button class="filter-btn" data-type="venue">运营场地</button>
-    <button class="filter-btn" data-type="training">训练场</button>
-    <button class="filter-btn" data-type="street">街头滑板点</button>
+    <button class="filter-btn" data-type="venue">滑板公园</button>
+    <button class="filter-btn" data-type="training">培训机构</button>
+    <button class="filter-btn" data-type="street">街头地形</button>
   </div>
 </div>
 
@@ -427,7 +467,7 @@ body {
 let activeCity = 'all';
 let activeFilter = 'all';
 let activeSpotId = null;
-const typeLabels = { venue: '运营场地', training: '训练场', street: '街头滑板点' };
+const typeLabels = { venue: '滑板公园', training: '培训机构', street: '街头地形' };
 
 // ── City config ─────────────────────────────
 const cityCenters = {
@@ -557,7 +597,7 @@ function renderList() {
   const groups = {};
   typeOrder.forEach(t => { groups[t] = filtered.filter(s => s.type === t); });
 
-  const sectionLabels = { venue: '运营场地', training: '训练场', street: '街头滑板点' };
+  const sectionLabels = { venue: '滑板公园', training: '培训机构', street: '街头地形' };
 
   container.innerHTML = typeOrder.map(type => {
     const spots = groups[type];
