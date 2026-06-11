@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>珠三角滑板场地图</title>
+<title>大湾区滑板场地图</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
@@ -58,7 +58,7 @@ body {
       rgba(10,8,6,0.78) 100%
     ),
     /* photo fills header */
-    url("images/header-bg.jpg") center/cover no-repeat,
+    url("wan.png") center/cover no-repeat,
     /* fallback dark base */
     #1a1410;
 }
@@ -619,7 +619,7 @@ body {
 <body>
 
 <div class="header">
-  <h1>珠三角滑板场地图</h1>
+  <h1>大湾区滑板场地图</h1>
   <div class="header-row" id="cityBar"></div>
   <div class="header-row" id="typeBar">
     <button class="filter-btn active" data-type="all">全部</button>
@@ -663,6 +663,8 @@ body {
 <script src="data/huizhou.js"></script>
 <script src="data/zhongshan.js"></script>
 <script src="data/zhaoqing.js"></script>
+<script src="data/hongkong.js"></script>
+<script src="data/macau.js"></script>
 <script src="data/spots.js"></script>
 <script>
 // ── State ──────────────────────────────────
@@ -681,6 +683,8 @@ const cityCenters = {
   '惠州': [23.112, 114.416, 11],
   '中山': [22.516, 113.393, 11],
   '肇庆': [23.047, 112.465, 11],
+  '香港': [22.319, 114.17, 11],
+  '澳门': [22.18, 113.55, 12],
 };
 
 function getAvailableCities() {

@@ -8,4 +8,6 @@ const skateSpots = [
   ...huizhouSpots,
   ...zhongshanSpots,
   ...zhaoqingSpots,
+  ...hongkongSpots,
+  ...macauSpots,
 ];
