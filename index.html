@@ -28,7 +28,7 @@ body {
   background: var(--bg);
 }
 
-/* Header — graffiti / skate deck inspired */
+/* Header — brush-stroke painted wall effect */
 .header {
   height: var(--header-height);
   color: #fff;
@@ -43,35 +43,30 @@ body {
   overflow: hidden;
   background: #1a1a1a
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E\
-      %3C!-- concrete texture --%3E\
-      %3Cfilter id='noise'%3E\
-        %3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E\
-        %3CfeColorMatrix type='saturate' values='0'/%3E\
-      %3C/filter%3E\
-      %3Crect width='1200' height='160' filter='url(%23noise)' opacity='0.12'/%3E\
-      %3C!-- bold paint splatters --%3E\
-      %3Ccircle cx='50' cy='130' r='45' fill='%23FF6B35' opacity='0.55'/%3E\
-      %3Ccircle cx='70' cy='120' r='30' fill='%23FF6B35' opacity='0.35'/%3E\
-      %3Cellipse cx='1120' cy='30' rx='50' ry='35' fill='%2300D9FF' opacity='0.5'/%3E\
-      %3Cellipse cx='1140' cy='40' rx='25' ry='20' fill='%2300D9FF' opacity='0.3'/%3E\
-      %3Ccircle cx='300' cy='20' r='28' fill='%23FFD700' opacity='0.45'/%3E\
-      %3Cellipse cx='850' cy='140' rx='65' ry='20' fill='%23DD2E44' opacity='0.5'/%3E\
-      %3Cellipse cx='830' cy='145' rx='35' ry='12' fill='%23DD2E44' opacity='0.3'/%3E\
-      %3Ccircle cx='600' cy='80' r='22' fill='%237ED321' opacity='0.4'/%3E\
-      %3Ccircle cx='580' cy='90' r='14' fill='%237ED321' opacity='0.25'/%3E\
-      %3C!-- diagonal grip-tape stripes --%3E\
-      %3Cline x1='-50' y1='40' x2='200' y2='160' stroke='%23FFD700' stroke-width='6' opacity='0.3'/%3E\
-      %3Cline x1='-30' y1='40' x2='220' y2='160' stroke='%23FFD700' stroke-width='2' opacity='0.2'/%3E\
-      %3Cline x1='1050' y1='-20' x2='1250' y2='100' stroke='%2300D9FF' stroke-width='5' opacity='0.3'/%3E\
-      %3Cline x1='1070' y1='-20' x2='1270' y2='100' stroke='%2300D9FF' stroke-width='2' opacity='0.2'/%3E\
-      %3C!-- graffiti tag marks --%3E\
-      %3Cpath d='M180 110 Q200 80 220 100 Q240 120 250 95' stroke='white' stroke-width='3' fill='none' opacity='0.25'/%3E\
-      %3Cpath d='M400 30 Q420 10 440 30 Q460 50 470 20' stroke='white' stroke-width='2.5' fill='none' opacity='0.2'/%3E\
-      %3Cpath d='M950 120 Q970 90 990 115 Q1010 140 1020 110' stroke='white' stroke-width='3' fill='none' opacity='0.25'/%3E\
-      %3C!-- stars / deck graphics --%3E\
-      %3Cpolygon points='480,65 483,55 486,65 496,65 488,70 491,80 483,74 475,80 478,70 470,65' fill='%23FF6B35' opacity='0.4'/%3E\
-      %3Cpolygon points='750,25 752,18 754,25 761,25 755,28 757,35 752,30 747,35 749,28 743,25' fill='white' opacity='0.35'/%3E\
-      %3Cpolygon points='200,45 202,38 204,45 211,45 205,48 207,55 202,50 197,55 199,48 193,45' fill='%2300D9FF' opacity='0.4'/%3E\
+      %3Cdefs%3E\
+        %3Cfilter id='rough'%3E\
+          %3CfeTurbulence type='fractalNoise' baseFrequency='0.04 0.3' numOctaves='3'/%3E\
+          %3CfeDisplacementMap in='SourceGraphic' scale='6'/%3E\
+        %3C/filter%3E\
+        %3Cfilter id='noise'%3E\
+          %3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E\
+          %3CfeColorMatrix type='saturate' values='0'/%3E\
+        %3C/filter%3E\
+      %3C/defs%3E\
+      %3C!-- wall texture --%3E\
+      %3Crect width='1200' height='160' filter='url(%23noise)' opacity='0.08'/%3E\
+      %3C!-- wide horizontal roller strokes --%3E\
+      %3Cpath d='M-20,20 Q200,16 500,22 T1200,18' stroke='%23222222' stroke-width='55' fill='none' opacity='0.7' filter='url(%23rough)'/%3E\
+      %3Cpath d='M-20,60 Q300,65 600,58 T1200,62' stroke='%23181818' stroke-width='50' fill='none' opacity='0.5' filter='url(%23rough)'/%3E\
+      %3Cpath d='M-20,95 Q400,92 800,98 T1200,94' stroke='%23202020' stroke-width='45' fill='none' opacity='0.6' filter='url(%23rough)'/%3E\
+      %3Cpath d='M-20,130 Q350,134 700,128 T1200,132' stroke='%231c1c1c' stroke-width='40' fill='none' opacity='0.5' filter='url(%23rough)'/%3E\
+      %3C!-- bold accent brush strokes --%3E\
+      %3Cpath d='M-30,35 Q380,28 600,38' stroke='%23FF6B35' stroke-width='28' fill='none' opacity='0.18' filter='url(%23rough)'/%3E\
+      %3Cpath d='M500,75 Q700,68 1000,80' stroke='%2300D9FF' stroke-width='22' fill='none' opacity='0.15' filter='url(%23rough)'/%3E\
+      %3Cpath d='M200,115 Q500,108 800,120' stroke='%23FFD700' stroke-width='18' fill='none' opacity='0.14' filter='url(%23rough)'/%3E\
+      %3C!-- diagonal slash strokes --%3E\
+      %3Cpath d='M850,-20 L1050,180' stroke='%23DD2E44' stroke-width='32' fill='none' opacity='0.12' filter='url(%23rough)'/%3E\
+      %3Cpath d='M80,-20 L280,180' stroke='%237ED321' stroke-width='24' fill='none' opacity='0.1' filter='url(%23rough)'/%3E\
     %3C/svg%3E");
 }
 
