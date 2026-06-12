@@ -1032,7 +1032,7 @@ function submitFeedback() {
 
   fetch(FEEDBACK_API, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify({ message: msg, _subject: '大湾区滑板地图 用户留言' })
   }).then(function(r) {
     if (r.ok) {
