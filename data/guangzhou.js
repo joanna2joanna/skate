@@ -211,5 +211,33 @@ const guangzhouSpots = [
     price: "免费",
     description: "番禺区时代芳华里商业广场，HeroSkate栏目推荐地形。宽阔Manual Pad、光滑大理石Ledge、四阶Flat Bar扶手等经典街式道具。地面光滑适合街式动作练习。",
     features: ["Manual Pad", "大理石Ledge", "Flat Bar", "免费", "HeroSkate推荐"]
+  },
+
+  // ── 陆冲场地 (2) ──────────────────────────
+  {
+    id: 67,
+    city: "广州",
+    name: "Flowave 天健陆冲公园",
+    type: "venue",
+    lat: 23.201412,
+    lng: 113.331272,
+    scale: "中型",
+    operator: "Flowave 陆冲社群",
+    price: "收费（可租板/护具）",
+    description: "广州最专业的陆冲专用场地，位于天健创意园内（地铁3号线同和站D出口）。泵道、浪壁、WaveBank、花生碗、大碗池全地形覆盖，封闭式管理。每周有团练，社群氛围浓厚，从新手到进阶均适合。",
+    features: ["泵道", "浪壁", "WaveBank", "碗池", "封闭场地", "装备租赁", "地铁直达"]
+  },
+  {
+    id: 68,
+    city: "广州",
+    name: "南沙慧谷超级堤",
+    type: "street",
+    lat: 22.741314,
+    lng: 113.606463,
+    scale: "7.5km 沿海碧道",
+    operator: "公共空间",
+    price: "免费",
+    description: "南沙区7.5公里沿海碧道，大湾区陆冲刷街圣地。平整海滨路面，吹海风 pumping 巡航体验极佳。适合长距离陆冲巡航和休闲刷街，可骑行/陆冲并行。",
+    features: ["沿海碧道", "7.5km", "免费", "pumping刷街", "海景", "骑行友好"]
   }
 ];
