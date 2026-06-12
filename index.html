@@ -194,14 +194,40 @@ body {
 }
 
 .list-header {
-  padding: 14px 20px 10px;
+  padding: 12px 20px 8px;
   font-size: 11px;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   flex-shrink: 0;
+}
+
+.search-bar {
+  padding: 6px 10px 8px;
+  flex-shrink: 0;
   border-bottom: 1px solid var(--border);
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-bar input:focus {
+  border-color: var(--accent);
+}
+
+.search-bar input::placeholder {
+  color: var(--text-muted);
 }
 
 .spot-list {
@@ -585,14 +611,13 @@ body {
   .sidebar {
     width: 100%;
     min-width: unset;
-    max-height: 40vh;
     border-right: none;
     border-top: 2px solid var(--text);
     order: 2;
   }
 
   .map-container {
-    height: 60vh;
+    height: 42vh; flex: 0 0 42vh;
     order: 1;
   }
 
@@ -635,6 +660,7 @@ body {
     <!-- List view -->
     <div class="list-view" id="listView">
       <div class="list-header" id="listHeader">共 8 个场地</div>
+      <div class="search-bar"><input type="search" id="searchBox" placeholder="搜索场地..."></div>
       <div class="spot-list" id="spotList"></div>
     </div>
 
@@ -670,6 +696,7 @@ body {
 // ── State ──────────────────────────────────
 let activeCity = 'all';
 let activeFilter = 'all';
+let searchQuery = '';
 let activeSpotId = null;
 const typeLabels = { venue: '滑板公园', training: '培训机构', street: '街头地形' };
 
@@ -757,6 +784,7 @@ function renderMarkers() {
   skateSpots.forEach(spot => {
     if (activeCity !== 'all' && spot.city !== activeCity) return;
     if (activeFilter !== 'all' && spot.type !== activeFilter) return;
+    if (searchQuery && !spot.name.toLowerCase().includes(searchQuery)) return;
 
     const marker = L.circleMarker([spot.lat, spot.lng], {
       radius: 12,
@@ -793,7 +821,8 @@ function renderList() {
   const header = document.getElementById('listHeader');
   const filtered = skateSpots.filter(s =>
     (activeCity === 'all' || s.city === activeCity) &&
-    (activeFilter === 'all' || s.type === activeFilter)
+    (activeFilter === 'all' || s.type === activeFilter) &&
+	    (!searchQuery || s.name.toLowerCase().includes(searchQuery))
   );
 
   header.textContent = `共 ${filtered.length} 个场地`;
@@ -927,6 +956,17 @@ document.querySelectorAll('#typeBar .filter-btn').forEach(btn => {
       });
   }
 })();
+
+// ── Search ─────────────────────────────────
+document.getElementById('searchBox').addEventListener('input', function() {
+  searchQuery = this.value.trim().toLowerCase();
+  activeSpotId = null;
+  highlightMarker(null);
+  document.getElementById('detailView').classList.remove('show');
+  document.getElementById('listView').style.display = '';
+  renderMarkers();
+  renderList();
+});
 
 // ── Init ───────────────────────────────────
 renderCityBar();
