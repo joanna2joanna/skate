@@ -1016,8 +1016,8 @@ document.getElementById('searchBox').addEventListener('input', function() {
 });
 
 // ── Feedback ──────────────────────────────
-// 使用 Formspree：去 https://formspree.io 用 QQ 邮箱注册，创建 form，替换下方 endpoint
-const FEEDBACK_API = 'https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID';
+// FormSubmit 零注册，首次提交会发确认邮件到 QQ 邮箱，点击激活后即可接收留言
+const FEEDBACK_API = 'https://formsubmit.co/ajax/304380013@qq.com';
 
 function toggleFeedback() {
   document.getElementById('feedbackBtn').style.display = 'none';
@@ -1033,7 +1033,7 @@ function submitFeedback() {
   fetch(FEEDBACK_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: msg, page: location.href, time: new Date().toISOString() })
+    body: JSON.stringify({ message: msg, _subject: '大湾区滑板地图 用户留言' })
   }).then(function(r) {
     if (r.ok) {
       document.getElementById('feedbackForm').classList.remove('show');
